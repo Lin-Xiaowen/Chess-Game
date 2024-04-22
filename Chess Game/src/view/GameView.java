@@ -163,7 +163,7 @@ public class GameView {
         playerWhite.add(playerWhiteName);
         try {
             //Online source for the Chess Piece Images
-            URL url = new URL("https://upload.wikimedia.org/wikipedia/en/e/ee/Roadrunner_looney_tunes.png");
+            URL url = new URL("https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/ChessSet.jpg/500px-ChessSet.jpg");
             BufferedImage bi = ImageIO.read(url);
             playerWhiteImage = new JLabel(new ImageIcon(bi));
         } catch (Exception e) {
@@ -220,7 +220,7 @@ public class GameView {
         playerBlack.add(playerBlackName);
         try {
             //Online source for the Chess Piece Images
-            URL url = new URL("https://upload.wikimedia.org/wikipedia/en/5/56/Wile_E_Coyote.png");
+            URL url = new URL("https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/ChessSet.jpg/500px-ChessSet.jpg");
             BufferedImage bi = ImageIO.read(url);
             playerBlackImage = new JLabel(new ImageIcon(bi));
         } catch (Exception e) {
@@ -405,7 +405,7 @@ public class GameView {
         }
         try {
             //Online source for the Chess Piece Images
-            URL url = new URL("http://www.rhinoink.ca/rhinos/images/games/chess-piece.png");
+            URL url = new URL("https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/ChessSet.jpg/500px-ChessSet.jpg");
             BufferedImage bi = ImageIO.read(url);
             chessBoxes[0][0].setIcon(new ImageIcon(bi));
         } catch (Exception e) {

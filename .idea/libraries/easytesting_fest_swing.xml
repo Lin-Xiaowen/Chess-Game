@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="easytesting.fest.swing" type="repository">
+    <properties maven-id="org.easytesting:fest-swing:1.2.1" />
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/fest-swing-1.2.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/fest-assert-1.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/fest-reflect-1.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/fest-util-1.1.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jcip-annotations-1.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

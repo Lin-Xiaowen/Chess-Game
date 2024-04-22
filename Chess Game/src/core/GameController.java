@@ -14,8 +14,8 @@ public class GameController {
     public static void main(String args[])
     {
         ChessBoard c = new ChessBoard();
-        SetBoard s = new SetBoard(c);
-        s.setPieces();
+        SetBoard s = new SetBoard(c, false);
+        s.setPieces(false);
         Move m = new Move(c);
 
         //Infinite Game-Loop
