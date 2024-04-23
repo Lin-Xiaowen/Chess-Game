@@ -3,32 +3,33 @@ package test.guiTest;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
-import org.fest.swing.core.GenericTypeMatcher;
 import org.fest.swing.edt.GuiActionRunner;
 import org.fest.swing.edt.GuiQuery;
 import org.fest.swing.fixture.FrameFixture;
 import org.fest.swing.fixture.JButtonFixture;
-import org.fest.swing.fixture.JPanelFixture;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import view.ChessGUI;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
-import static org.junit.Assert.assertEquals;
+import static org.fest.swing.core.matcher.JButtonMatcher.withText;
+import static org.junit.Assert.*;
 
 public class ChessGUITest {
     private FrameFixture window;
+    private JFrame frame;
 
     @Before
     public void setUp() {
         // Create and show the Chess Game GUI on the EDT
-        JFrame frame = GuiActionRunner.execute(new GuiQuery<JFrame>() {
+        frame = GuiActionRunner.execute(new GuiQuery<JFrame>() {
             protected JFrame executeInEDT() {
                 return new ChessGUI().gameContainer;
             }
@@ -203,30 +204,94 @@ public class ChessGUITest {
     }
 
     @Test
-    public void testCreateToolbar() throws Exception {
-        // Obtain the instance of the class containing createToolbar() method
+    public void testCreateImages() throws Exception {
         ChessGUI chessGame = new ChessGUI();
+        // Get the class of the object containing the chessPieceImages field
+        Class<?> clazz = ChessGUI.class; // Replace YourClassUnderTest with your actual class name
 
-        // Use reflection to access the private method createToolbar()
-        Method createToolbarMethod = ChessGUI.class.getDeclaredMethod("createToolbar");
-        createToolbarMethod.setAccessible(true);
-        createToolbarMethod.invoke(chessGame); // Invoke the private method
+        // Get the declared field "chessPieceImages"
+        Field field = clazz.getDeclaredField("chessPieceImages");
 
-        // Now interact with the GUI components added by createToolbar()
-        JButtonFixture newButtonFixture = window.button("New");
-        JButtonFixture undoButtonFixture = window.button("Undo");
+        // Since chessPieceImages is not public, make it accessible
+        field.setAccessible(true);
 
-        // Assert the properties of the buttons
-        assertEquals("New", newButtonFixture.target.getText());
-        assertEquals("Undo", undoButtonFixture.target.getText());
+        // Now you can get or set the value of chessPieceImages
+        Image[][] chessPieceImagesArray = (Image[][]) field.get(chessGame); // Replace chessGame with your instance
 
-        // Assert the dimensions and fonts
-        assertEquals(new Dimension(300, 100), newButtonFixture.target.getPreferredSize());
-        assertEquals(new Dimension(300, 100), undoButtonFixture.target.getPreferredSize());
-        assertEquals(new Font("Arial", Font.PLAIN, 40), newButtonFixture.target.getFont());
-        assertEquals(new Font("Arial", Font.PLAIN, 40), undoButtonFixture.target.getFont());
+        // Use the chessPieceImagesArray for testing or manipulation
+        // Example usage:
+        assertThat(chessPieceImagesArray).isNotNull();
+        assertThat(chessPieceImagesArray).hasSize(2);
+        assertThat(chessPieceImagesArray[0]).hasSize(6);
+        assertThat(chessPieceImagesArray[1]).hasSize(6);
 
     }
+
+    @Test
+    public void testDrawPiecesForNewGame() throws Exception {
+        ChessGUI chessGame = new ChessGUI();
+        // Get the class of the object containing the chessPieceImages field
+        Class<?> clazz = ChessGUI.class; // Replace YourClassUnderTest with your actual class name
+
+        // Get the declared field "chessPieceImages"
+        Field chessPieceImagesField = clazz.getDeclaredField("chessPieceImages");
+        Field chessBoxesField = clazz.getDeclaredField("chessBoxes");
+
+        // Since chessPieceImages is not public, make it accessible
+        chessPieceImagesField.setAccessible(true);
+        chessBoxesField.setAccessible(true);
+
+        // Now you can get or set the value of chessPieceImages
+        Image[][] chessPieceImagesArray = (Image[][]) chessPieceImagesField.get(chessGame);
+        JButton[][] chessBoxes = (JButton[][]) chessBoxesField.get(chessGame);
+
+
+        // Call the method to draw pieces
+        chessGame.drawPiecesForNewGame();
+
+        // Verify specific buttons have the correct icons
+        assertIcon(chessBoxes[6][0], chessPieceImagesArray[ChessGUI.WHITE][ChessGUI.PAWN]); // White pawn at row 6, col 0
+        assertIcon(chessBoxes[1][0], chessPieceImagesArray[ChessGUI.BLACK][ChessGUI.PAWN]); // Black pawn at row 1, col 0
+
+        // White face pieces on top row
+        assertIcon(chessBoxes[7][0], chessPieceImagesArray[ChessGUI.WHITE][ChessGUI.ROOK]); // White rook at row 7, col 0
+        assertIcon(chessBoxes[7][1], chessPieceImagesArray[ChessGUI.WHITE][ChessGUI.KNIGHT]); // White knight at row 7, col 1
+        assertIcon(chessBoxes[7][2], chessPieceImagesArray[ChessGUI.WHITE][ChessGUI.BISHOP]); // White bishop at row 7, col 2
+        assertIcon(chessBoxes[7][3], chessPieceImagesArray[ChessGUI.WHITE][ChessGUI.QUEEN]); // White queen at row 7, col 3
+        assertIcon(chessBoxes[7][4], chessPieceImagesArray[ChessGUI.WHITE][ChessGUI.KING]); // White king at row 7, col 4
+        assertIcon(chessBoxes[7][5], chessPieceImagesArray[ChessGUI.WHITE][ChessGUI.BISHOP]); // White bishop at row 7, col 5
+        assertIcon(chessBoxes[7][6], chessPieceImagesArray[ChessGUI.WHITE][ChessGUI.KNIGHT]); // White knight at row 7, col 6
+        assertIcon(chessBoxes[7][7], chessPieceImagesArray[ChessGUI.WHITE][ChessGUI.ROOK]); // White rook at row 7, col 7
+
+        // Black face pieces on bottom row
+        assertIcon(chessBoxes[0][0], chessPieceImagesArray[ChessGUI.BLACK][ChessGUI.ROOK]); // Black rook at row 0, col 0
+        assertIcon(chessBoxes[0][1], chessPieceImagesArray[ChessGUI.BLACK][ChessGUI.KNIGHT]); // Black knight at row 0, col 1
+        assertIcon(chessBoxes[0][2], chessPieceImagesArray[ChessGUI.BLACK][ChessGUI.BISHOP]); // Black bishop at row 0, col 2
+        assertIcon(chessBoxes[0][3], chessPieceImagesArray[ChessGUI.BLACK][ChessGUI.QUEEN]); // Black queen at row 0, col 3
+        assertIcon(chessBoxes[0][4], chessPieceImagesArray[ChessGUI.BLACK][ChessGUI.KING]); // Black king at row 0, col 4
+        assertIcon(chessBoxes[0][5], chessPieceImagesArray[ChessGUI.BLACK][ChessGUI.BISHOP]); // Black bishop at row 0, col 5
+        assertIcon(chessBoxes[0][6], chessPieceImagesArray[ChessGUI.BLACK][ChessGUI.KNIGHT]); // Black knight at row 0, col 6
+        assertIcon(chessBoxes[0][7], chessPieceImagesArray[ChessGUI.BLACK][ChessGUI.ROOK]); // Black rook at row 0, col 7
+    }
+
+    // Helper method to assert icon on a JButton
+    private void assertIcon(JButton button, Image expectedIcon) {
+        Icon icon = button.getIcon();
+        BufferedImage image1 = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
+        icon.paintIcon(null, image1.getGraphics(), 0, 0);
+
+        BufferedImage image2 = new BufferedImage(expectedIcon.getWidth(null), expectedIcon.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = image2.createGraphics();
+        g2d.drawImage(expectedIcon, 0, 0, null);
+        g2d.dispose();
+
+        for(int i = 0; i < image1.getHeight(); i++){
+            for(int j = 0; j < image1.getWidth(); j++){
+                assertEquals(image1.getRGB(i, j), image2.getRGB(i, j));
+            }
+        }
+    }
+
 
 }
 
